@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowNet - Curtidas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Publicação</h1>
+
+        <div id="publicacao"></div>
+
+        <button id="botaoCurtir">♡ Curtir</button>
+
+        <p id="totalCurtidas"></p>
+
+        <a href="feed.html">Voltar para o feed</a>
+    </div>
+
+    <script>
+        const usuario = sessionStorage.getItem("usuarioLogado");
+
+        if (!usuario) {
+            window.location.href = "login.html";
+        }
+
+        const id = new URLSearchParams(window.location.search).get("id");
+
+        function carregarPostagem() {
+            const publicacoes = JSON.parse(localStorage.getItem("publicacoes")) || [];
+
+            const post = publicacoes.find(p => p.id === id);
+
+            if (!post) {
+                document.getElementById("publicacao").textContent =
+                    "Publicação não encontrada.";
+                document.getElementById("botaoCurtir").disabled = true;
+                return;
+            }
+
+            document.getElementById("publicacao").textContent =
+                post.autor + ": " + post.texto;
+
+            const curtiu = post.curtidas.includes(usuario);
+
+            document.getElementById("botaoCurtir").textContent =
+                curtiu ? "♥ Descurtir" : "♡ Curtir";
+
+            document.getElementById("totalCurtidas").textContent =
+                post.curtidas.length + " curtida(s)";
+        }
+
+        document.getElementById("botaoCurtir").addEventListener("click", function() {
+            const publicacoes = JSON.parse(localStorage.getItem("publicacoes")) || [];
+
+            const post = publicacoes.find(p => p.id === id);
+
+            if (!post) return;
+
+            const indice = post.curtidas.indexOf(usuario);
+
+            if (indice === -1) {
+                post.curtidas.push(usuario);
+            } else {
+                post.curtidas.splice(indice, 1);
+            }
+
+            localStorage.setItem("publicacoes", JSON.stringify(publicacoes));
+
+            carregarPostagem();
+        });
+
+        carregarPostagem();
+    </script>
+
+</body>
+</html>

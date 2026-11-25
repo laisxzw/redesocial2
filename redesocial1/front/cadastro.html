@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowNet - Cadastro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Criar conta</h1>
+        <p>Faça parte da GlowNet!</p>
+
+        <form id="formCadastro">
+            <input type="text" id="nome" placeholder="Seu nome" required>
+
+            <input type="email" id="email" placeholder="Seu e-mail" required>
+
+            <input type="password" id="senha" placeholder="Sua senha" required>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+
+        <p>Já tem uma conta?
+            <a href="login.html">Fazer login</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById("formCadastro").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+
+            const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+            const existe = usuarios.some(u => u.email === email);
+
+            if (existe) {
+                alert("Esse e-mail já está cadastrado!");
+                return;
+            }
+
+            usuarios.push({
+                nome: nome,
+                email: email,
+                senha: senha
+            });
+
+            localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+            alert("Cadastro realizado com sucesso!");
+            window.location.href = "login.html";
+        });
+    </script>
+
+</body>
+</html>

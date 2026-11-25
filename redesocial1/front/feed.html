@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowNet - Feed</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="feed-container">
+        <header>
+            <h1>GlowNet</h1>
+            <span id="boasVindas"></span>
+            <button onclick="sair()">Sair</button>
+        </header>
+
+        <div class="nova-postagem">
+            <h2>O que você está pensando?</h2>
+            <a href="postagem.html">
+                <button>Criar publicação</button>
+            </a>
+        </div>
+
+        <h2>Publicações</h2>
+        <div id="publicacoes"></div>
+    </div>
+
+    <script>
+        const usuario = sessionStorage.getItem("usuarioLogado");
+
+        if (!usuario) {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById("boasVindas").textContent =
+            "Olá, " + usuario + "!";
+
+        function carregarPublicacoes() {
+            const publicacoes = JSON.parse(localStorage.getItem("publicacoes")) || [];
+            const area = document.getElementById("publicacoes");
+
+            area.innerHTML = "";
+
+            publicacoes.slice().reverse().forEach(post => {
+                const card = document.createElement("div");
+                card.className = "post";
+
+                const nome = document.createElement("h3");
+                nome.textContent = post.autor;
+
+                const texto = document.createElement("p");
+                texto.textContent = post.texto;
+
+                const link = document.createElement("a");
+                link.href = "curtida.html?id=" + encodeURIComponent(post.id);
+                link.textContent = "♡ " + post.curtidas.length + " Curtidas";
+
+                card.append(nome, texto, link);
+                area.appendChild(card);
+            });
+        }
+
+        function sair() {
+            sessionStorage.removeItem("usuarioLogado");
+            window.location.href = "login.html";
+        }
+
+        carregarPublicacoes();
+    </script>
+
+</body>
+</html>

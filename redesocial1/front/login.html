@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowNet - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>GlowNet</h1>
+        <p>Entre na sua conta!</p>
+
+        <form id="formLogin">
+            <input type="email" id="email" placeholder="Seu e-mail" required>
+
+            <input type="password" id="senha" placeholder="Sua senha" required>
+
+            <button type="submit">Entrar</button>
+        </form>
+
+        <p>Não tem uma conta?
+            <a href="cadastro.html">Cadastre-se</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById("formLogin").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+
+            const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+            const usuario = usuarios.find(u =>
+                u.email === email && u.senha === senha
+            );
+
+            if (usuario) {
+                sessionStorage.setItem("usuarioLogado", usuario.nome);
+                window.location.href = "feed.html";
+            } else {
+                alert("E-mail ou senha incorretos!");
+            }
+        });
+    </script>
+
+</body>
+</html>

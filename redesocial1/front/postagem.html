@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowNet - Nova postagem</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Nova publicação</h1>
+
+        <form id="formPostagem">
+            <textarea id="texto" placeholder="Escreva sua publicação..." required></textarea>
+
+            <button type="submit">Publicar</button>
+        </form>
+
+        <a href="feed.html">Voltar para o feed</a>
+    </div>
+
+    <script>
+        const usuario = sessionStorage.getItem("usuarioLogado");
+
+        if (!usuario) {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById("formPostagem").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const texto = document.getElementById("texto").value.trim();
+
+            if (!texto) {
+                alert("Escreva alguma coisa!");
+                return;
+            }
+
+            const publicacoes = JSON.parse(localStorage.getItem("publicacoes")) || [];
+
+            publicacoes.push({
+                id: Date.now().toString(),
+                autor: usuario,
+                texto: texto,
+                curtidas: []
+            });
+
+            localStorage.setItem("publicacoes", JSON.stringify(publicacoes));
+
+            alert("Publicação criada!");
+            window.location.href = "feed.html";
+        });
+    </script>
+
+</body>
+</html>
