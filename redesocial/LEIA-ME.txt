@@ -1,0 +1,38 @@
+GLOWNET - EXECUÇÃO LOCAL NO VS CODE
+
+O projeto roda apenas no seu computador. Não precisa publicar na internet nem contratar hospedagem.
+
+REQUISITOS
+- PHP instalado (PHP 8+ recomendado)
+- MySQL instalado e iniciado (por exemplo, pelo XAMPP)
+- Extensão PDO MySQL habilitada no PHP
+
+1) PREPARE O BANCO DE DADOS
+- Abra o XAMPP Control Panel e clique em Start ao lado de MySQL.
+- Abra http://localhost/phpmyadmin no navegador.
+- Entre na opção Importar, selecione o arquivo database.sql desta pasta e execute.
+- O script cria o banco glownet_db e as tabelas usuarios, publicacoes e curtidas.
+
+2) CONFIRA A CONEXÃO
+- Abra back/config.php.
+- Por padrão, está configurado para MySQL em 127.0.0.1, banco glownet_db, usuário root e senha vazia (padrão comum do XAMPP).
+- Se seu MySQL usa outra senha, altere $pass nesse arquivo.
+
+3) ABRA O PROJETO NO VS CODE
+- Abra a pasta redesocial (a pasta que contém back, front e database.sql).
+- No VS Code, vá em Terminal > Novo Terminal.
+- Confira se o terminal está na pasta redesocial.
+- Digite: php -S localhost:8000
+- Deixe o terminal aberto enquanto usar o site.
+
+4) ABRA O SITE
+- Entre em http://localhost:8000/front/login.html
+- Crie uma conta, faça login, publique e curta posts.
+
+IMPORTANTE
+- Não use o Live Server (porta 5500) para este projeto. Ele serve arquivos estáticos e não executa PHP.
+- Use sempre localhost:8000 para abrir o site. As páginas HTML chamam o PHP em ../back/api.php.
+- O PHP mantém a sessão de login; o MySQL armazena usuários, publicações e curtidas.
+- A senha é armazenada com password_hash, não em texto puro.
+- Se aparecer erro de conexão, confira se o MySQL está iniciado, se database.sql foi importado e se back/config.php tem usuário/senha corretos.
+- Se a mensagem disser que PDO MySQL não está disponível, habilite a extensão pdo_mysql na instalação PHP usada pelo terminal.

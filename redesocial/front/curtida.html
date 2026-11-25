@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowNet - Publicação</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Publicação</h1>
+        <div id="publicacao"></div>
+        <button id="botaoCurtir" type="button">♡ Curtir</button>
+        <p id="totalCurtidas"></p>
+        <p id="mensagem" class="mensagem" role="alert"></p>
+        <a href="feed.html">Voltar para o feed</a>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        const id = new URLSearchParams(window.location.search).get('id');
+        let postAtual;
+        async function carregarPostagem() {
+            await obterUsuarioLogado();
+            const posts = await apiRequest('publicacao');
+            postAtual = posts.find(post => String(post.id_publicacao) === String(id));
+            if (!postAtual) throw new Error('Publicação não encontrada.');
+            document.getElementById('publicacao').textContent = `${postAtual.autor} (@${postAtual.username}): ${postAtual.legenda}`;
+            document.getElementById('botaoCurtir').textContent = `${Number(postAtual.usuario_curtiu) ? '♥ Descurtir' : '♡ Curtir'}`;
+            document.getElementById('totalCurtidas').textContent = `${postAtual.total_curtidas} curtida(s)`;
+        }
+        document.getElementById('botaoCurtir').addEventListener('click', async () => {
+            try {
+                await apiRequest('curtida', 'POST', { id_publicacao: Number(id) });
+                await carregarPostagem();
+            } catch (erro) {
+                document.getElementById('mensagem').textContent = erro.message;
+            }
+        });
+        carregarPostagem().catch(erro => {
+            document.getElementById('mensagem').textContent = erro.message;
+            if (erro.message.includes('login')) window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

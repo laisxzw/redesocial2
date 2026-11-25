@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowNet - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>GlowNet</h1>
+        <p>Entre na sua conta!</p>
+        <form id="formLogin">
+            <input type="email" id="email" placeholder="Seu e-mail" required>
+            <input type="password" id="senha" placeholder="Sua senha" required>
+            <button type="submit">Entrar</button>
+            <p id="mensagem" class="mensagem" role="alert"></p>
+        </form>
+        <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('formLogin').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const mensagem = document.getElementById('mensagem');
+            mensagem.textContent = '';
+            try {
+                await apiRequest('login', 'POST', {
+                    email: document.getElementById('email').value.trim(),
+                    senha: document.getElementById('senha').value
+                });
+                window.location.href = 'feed.html';
+            } catch (erro) {
+                mensagem.textContent = erro.message;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowNet - Feed</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="feed-container">
+        <header>
+            <h1>GlowNet</h1>
+            <span id="boasVindas"></span>
+            <button id="botaoSair" type="button">Sair</button>
+        </header>
+        <div class="nova-postagem">
+            <h2>O que você está pensando?</h2>
+            <a href="postagem.html"><button type="button">Criar publicação</button></a>
+        </div>
+        <h2>Publicações</h2>
+        <p id="mensagem" class="mensagem" role="alert"></p>
+        <div id="publicacoes"></div>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        let usuarioAtual;
+        const area = document.getElementById('publicacoes');
+
+        async function iniciar() {
+            try {
+                usuarioAtual = await obterUsuarioLogado();
+                document.getElementById('boasVindas').textContent = `Olá, ${usuarioAtual.nome}!`;
+                await carregarPublicacoes();
+            } catch (erro) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        async function carregarPublicacoes() {
+            const posts = await apiRequest('publicacao');
+            area.innerHTML = '';
+            if (!posts.length) {
+                area.textContent = 'Ainda não há publicações. Seja a primeira pessoa a postar!';
+                return;
+            }
+            posts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post';
+                const autor = document.createElement('h3');
+                autor.textContent = `${post.autor} (@${post.username})`;
+                const texto = document.createElement('p');
+                texto.textContent = post.legenda;
+                const data = document.createElement('small');
+                data.textContent = new Date(post.data_publicacao.replace(' ', 'T')).toLocaleString('pt-BR');
+                const curtir = document.createElement('button');
+                curtir.type = 'button';
+                curtir.textContent = `${Number(post.usuario_curtiu) ? '♥' : '♡'} ${post.total_curtidas} Curtidas`;
+                curtir.addEventListener('click', async () => {
+                    try {
+                        await apiRequest('curtida', 'POST', { id_publicacao: Number(post.id_publicacao) });
+                        await carregarPublicacoes();
+                    } catch (erro) {
+                        alert(erro.message);
+                    }
+                });
+                card.append(autor, texto, data, document.createElement('br'), curtir);
+                area.appendChild(card);
+            });
+        }
+
+        document.getElementById('botaoSair').addEventListener('click', async () => {
+            try { await apiRequest('logout', 'POST', {}); } catch (erro) { console.error(erro); }
+            window.location.href = 'login.html';
+        });
+        iniciar().catch(erro => document.getElementById('mensagem').textContent = erro.message);
+    </script>
+</body>
+</html>

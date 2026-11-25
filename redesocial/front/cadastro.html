@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowNet - Cadastro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Criar conta</h1>
+        <p>Faça parte da GlowNet!</p>
+        <form id="formCadastro">
+            <input type="text" id="nome" placeholder="Seu nome" maxlength="100" required>
+            <input type="text" id="username" placeholder="Nome de usuário (ex.: lais123)" minlength="3" maxlength="30" pattern="[A-Za-z0-9._]{3,30}" required>
+            <input type="email" id="email" placeholder="Seu e-mail" required>
+            <input type="password" id="senha" placeholder="Sua senha (mínimo 6 caracteres)" minlength="6" required>
+            <button type="submit">Cadastrar</button>
+            <p id="mensagem" class="mensagem" role="alert"></p>
+        </form>
+        <p>Já tem uma conta? <a href="login.html">Fazer login</a></p>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('formCadastro').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const mensagem = document.getElementById('mensagem');
+            mensagem.textContent = '';
+            try {
+                await apiRequest('usuario', 'POST', {
+                    nome: document.getElementById('nome').value.trim(),
+                    username: document.getElementById('username').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    senha: document.getElementById('senha').value
+                });
+                alert('Conta criada com sucesso! Agora faça login.');
+                window.location.href = 'login.html';
+            } catch (erro) {
+                mensagem.textContent = erro.message;
+            }
+        });
+    </script>
+</body>
+</html>
